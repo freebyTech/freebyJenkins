@@ -8,9 +8,9 @@
 #   Authors: James Eby
 #
 
-if [ -d ~/creds ]; then
+if [ -d ../../freebysecrets ]; then
     echo 'Copying credientials for build.'
-    cp -r ~/creds ./creds
+    cp -r ../../freebysecrets/creds ./creds
 fi
 
 # Use the  --no-cache to force a complete rebuild.

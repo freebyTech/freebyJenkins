@@ -7,9 +7,9 @@
 #   Authors: James Eby
 #
 
-if [ -d ../freebygitops ]; then
-    echo 'Setting up environment variables for a development environment run.'
-    . ../../freebygitops/file-ops/linux/environments/_all/home/setUserTempEnvironmentVariables.sh
+if [ -d ../../freebysecrets ]; then
+    echo 'Setting up environment variables for a docker container run.'
+    . ../../freebysecrets/env/setUserEnvironmentVariables-Session.sh
 fi
 
 docker run -p 8080:8080 --env-file env.list freebytech/jenkins
