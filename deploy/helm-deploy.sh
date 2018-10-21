@@ -6,4 +6,4 @@
 #   Authors: James Eby
 #
 
-helm upgrade --install install freeby-jenkins
+helm install freeby-jenkins
