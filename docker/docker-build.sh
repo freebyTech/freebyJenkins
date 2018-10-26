@@ -8,10 +8,5 @@
 #   Authors: James Eby
 #
 
-if [ -d ../../freebysecrets ]; then
-    echo 'Copying credientials for build.'
-    cp -r ../../freebysecrets/creds ./creds
-fi
-
 # Use the  --no-cache to force a complete rebuild.
 docker build -t freebytech/jenkins .

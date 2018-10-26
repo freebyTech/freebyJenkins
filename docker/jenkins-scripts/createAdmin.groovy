@@ -13,18 +13,22 @@ def instance = Jenkins.get()
 def jenkinsUser = System.getenv('JENKINS_USER')
 def jenkinsUrl = System.getenv('JENKINS_URL')
 
-def jenkinsUserPasswordFile = new File("~/creds/${jenkinsUser}@${jenkinsUrl}").text
+// Null or empty check.
+if(!jenkinsUser?.trim()) {
+    def jenkinsUserPasswordFile = new File("~/creds/${jenkinsUser}@${jenkinsUrl}").text
 
-println 'Setting up default Jenkins Admin User.'
-def jenkinsUserPassword = jenkinsUserPasswordFile.split(System.getProperty("line.separator"))[0]
+    println 'Setting up default Jenkins Admin User.'
+    def jenkinsUserPassword = jenkinsUserPasswordFile.split(System.getProperty("line.separator"))[0]
 
-def hudsonRealm = new HudsonPrivateSecurityRealm(false)
-hudsonRealm.createAccount(jenkinsUser, jenkinsUserPassword)
-instance.setSecurityRealm(hudsonRealm)
- 
-def strategy = new FullControlOnceLoggedInAuthorizationStrategy()
-instance.setAuthorizationStrategy(strategy)
-instance.save()
- 
-Jenkins.instance.getInjector().getInstance(AdminWhitelistRule.class).setMasterKillSwitch(false)
+    def hudsonRealm = new HudsonPrivateSecurityRealm(false)
+    hudsonRealm.createAccount(jenkinsUser, jenkinsUserPassword)
+    instance.setSecurityRealm(hudsonRealm)
+    
+    def strategy = new FullControlOnceLoggedInAuthorizationStrategy()
+    instance.setAuthorizationStrategy(strategy)
+    instance.save()
+    
+    Jenkins.instance.getInjector().getInstance(AdminWhitelistRule.class).setMasterKillSwitch(false)
+}
+
 
