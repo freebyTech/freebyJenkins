@@ -23,10 +23,10 @@ USER root
 COPY jenkins-scripts/setSettings.groovy /usr/share/jenkins/ref/init.groovy.d/setSettings.groovy
 COPY jenkins-scripts/createAdmin.groovy /usr/share/jenkins/ref/init.groovy.d/createAdmin.groovy
 
+RUN apt-get update && apt-get install -y iputils-ping
+
 # drop back to the regular jenkins user - good practice
 USER jenkins
-
-RUN apt-get update && apt-get install -y iputils-ping
 
 # The list of plugins was derived from running:
 #
