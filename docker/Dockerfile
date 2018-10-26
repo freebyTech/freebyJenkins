@@ -26,8 +26,7 @@ COPY jenkins-scripts/createAdmin.groovy /usr/share/jenkins/ref/init.groovy.d/cre
 # drop back to the regular jenkins user - good practice
 USER jenkins
 
-COPY creds/ ~/creds/
-
+RUN apt-get update && apt-get install -y iputils-ping
 
 # The list of plugins was derived from running:
 #

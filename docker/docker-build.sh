@@ -10,3 +10,4 @@
 
 # Use the  --no-cache to force a complete rebuild.
 docker build -t freebytech/jenkins .
+docker push freebytech/jenkins
