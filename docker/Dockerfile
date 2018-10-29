@@ -15,7 +15,7 @@
 FROM jenkins/jenkins:lts
 LABEL maintainer="James@freebyTech.com"
 
-ENV JAVA_OPTS="-Xmx6144m -Djenkins.install.runSetupWizard=false"
+ENV JAVA_OPTS=" -Djenkins.install.runSetupWizard=false"
 ENV JENKINS_OPTS=" --handlerCountMax=300"
 
 USER root

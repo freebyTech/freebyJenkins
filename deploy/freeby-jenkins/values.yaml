@@ -21,11 +21,11 @@ Master:
   # AdminPassword: <defaults to random>
   resources:
     requests:
-      cpu: "50m"
-      memory: "256Mi"
+      cpu: "100m"
+      memory: "1024Mi"
     limits:
       cpu: "2000m"
-      memory: "2048Mi"
+      memory: "4096Mi"
   # Environment variables that get added to the init container (useful for e.g. http_proxy)
   # InitContainerEnv:
   #   - name: http_proxy
