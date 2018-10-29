@@ -71,4 +71,4 @@ structs:latest
 build-timeout:latest
 jsch:latest
 job-dsl:latest
-kubernetes-plugin:latest
+kubernetes:latest
