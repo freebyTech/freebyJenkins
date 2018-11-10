@@ -20,9 +20,6 @@ ENV JENKINS_OPTS=" --handlerCountMax=300"
 
 USER root
 
-COPY jenkins-scripts/setSettings.groovy /usr/share/jenkins/ref/init.groovy.d/setSettings.groovy
-COPY jenkins-scripts/createAdmin.groovy /usr/share/jenkins/ref/init.groovy.d/createAdmin.groovy
-
 RUN apt-get update && apt-get install -y iputils-ping
 
 # drop back to the regular jenkins user - good practice
@@ -38,5 +35,6 @@ USER jenkins
 COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
 RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
 
+ADD jenkins-scripts /usr/share/jenkins/ref/init.groovy.d
 
 

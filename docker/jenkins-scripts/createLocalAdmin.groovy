@@ -11,17 +11,18 @@ def instance = Jenkins.get()
 //def jenkinsUrl = EnvVars.masterEnvVars.get('JENKINS_URL')
 
 def jenkinsUser = System.getenv('JENKINS_USER')
-def jenkinsUrl = System.getenv('JENKINS_URL')
+def jenkinsPassword = System.getenv('JENKINS_USER_PASSWORD')
 
 // Null or empty check.
-if(!jenkinsUser?.trim()) {
-    def jenkinsUserPasswordFile = new File("~/creds/${jenkinsUser}@${jenkinsUrl}").text
+if(jenkinsUser?.trim()) {
+    //def jenkinsUserPasswordFile = new File("~/creds/${jenkinsUser}@${jenkinsUrl}").text
 
     println 'Setting up default Jenkins Admin User.'
-    def jenkinsUserPassword = jenkinsUserPasswordFile.split(System.getProperty("line.separator"))[0]
+    println jenkinsPassword
+    //def jenkinsUserPassword = jenkinsUserPasswordFile.split(System.getProperty("line.separator"))[0]
 
     def hudsonRealm = new HudsonPrivateSecurityRealm(false)
-    hudsonRealm.createAccount(jenkinsUser, jenkinsUserPassword)
+    hudsonRealm.createAccount(jenkinsUser, jenkinsPassword)
     instance.setSecurityRealm(hudsonRealm)
     
     def strategy = new FullControlOnceLoggedInAuthorizationStrategy()

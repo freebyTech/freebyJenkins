@@ -30,9 +30,24 @@ Master:
   # InitContainerEnv:
   #   - name: http_proxy
   #     value: "http://192.168.64.1:3128"
-  # ContainerEnv:
+  ContainerEnv:
   #   - name: http_proxy
   #     value: "http://192.168.64.1:3128"
+      - name: AD_DOMAIN
+          valueFrom:
+            secretKeyRef:
+              name: standard-env-secrets
+              key: AD_DOMAIN
+      - name: REGISTRY_URL
+          valueFrom:
+            secretKeyRef:
+              name: standard-env-secrets
+              key: REGISTRY_URL
+      - name: GIT_REPO_URL
+          valueFrom:
+            secretKeyRef:
+              name: standard-env-secrets
+              key: GIT_REPO_URL
   # Set min/max heap here if needed with:
   # JavaOpts: "-Xms512m -Xmx512m"
   # JenkinsOpts: ""

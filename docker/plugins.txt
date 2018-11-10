@@ -72,3 +72,4 @@ build-timeout:latest
 jsch:latest
 job-dsl:latest
 kubernetes:latest
+active-directory:latest
