@@ -10,7 +10,6 @@ import jenkins.*
 
 // Setup proper integration with active directory
 def adDomain = System.getenv('AD_DOMAIN')
-def adDomainController = System.getenv("AD_DOMAIN_CONTROLLER")
 
 // Null or empty check.
 if(adDomain?.trim()) {
