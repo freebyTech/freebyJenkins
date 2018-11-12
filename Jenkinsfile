@@ -4,7 +4,7 @@ def version_prefix = '1.0'
 def tag=''
 def version=''
 def label = "worker-${UUID.randomUUID().toString()}"
-def docker_regsitry = System.getenv("REGISTRY_URL")
+def docker_regsitry = Jenkins.instance.getProperty("REGISTRY_URL")
 def repository = "freebytech"
 
 podTemplate( label: label,
