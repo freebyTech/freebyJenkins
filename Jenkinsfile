@@ -1,4 +1,6 @@
 def label = "worker-${UUID.randomUUID().toString()}"
+// Change this when major / minor functionality changes.
+def version_prefix = '1.0'
 
 podTemplate( label: label,
   containers: 
@@ -13,36 +15,40 @@ podTemplate( label: label,
   node(label) 
   {
     def image = 'jenkins'
-    def version_prefix = '1.0'
     def tag=''
     def version=''
-    def registry = env.REGISTRY_URL
+    def registry = ''
     def repository = 'freebytech'    
     def docker_build_arguments=''
 
 	//////////////////////////////////////////////////////////////////////////
-    stage('Prepare') 
+    stage('Setup Build Vars') 
     {
       def date = new Date()
-      version = "${version_prefix}.${date.format('MMdd')}.${env.BUILD_NUMBER}"
+      version = "${version_prefix}.${env.BUILD_NUMBER}.${date.format('MMdd')}"
+
+      // Standard Docker Registry?
       if('index.docker.io'.equalsIgnoreCase(registry)) 
       {
         tag = "${repository}/${image}:${version}"
+        regsitry = ''
       }
       else 
       {
-        tag = "${registry}/${repository}/${image}:${version}"
+        tag = "${env.REGISTRY_URL}/${repository}/${image}:${version}"
+        registry = "https://${env.REGISTRY_URL}"
       }      
       currentBuild.displayName = "# " + version
     }
     //////////////////////////////////////////////////////////////////////////
-    stage('Build') 
+    stage('Build Image') 
     {
       container('docker') 
       {
         checkout scm
-              
-        docker.withRegistry("https://${registry}","5eb3385d-b03c-4802-a2b8-7f6df51f3209") 
+        
+        // Use guid of known user for registry security
+        docker.withRegistry(registry, "5eb3385d-b03c-4802-a2b8-7f6df51f3209") 
         {
           def app
           if(docker_build_arguments=='') 
