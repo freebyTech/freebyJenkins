@@ -30,11 +30,13 @@ podTemplate( label: label,
       // Standard Docker Registry?
       if('index.docker.io'.equalsIgnoreCase(registry)) 
       {
+        echo 'Publishing to standard docker registry.'
         tag = "${repository}/${image}:${version}"
         regsitry = ''
       }
       else 
       {
+        echo "Publishing to registry ${env.REGISTRY_URL}"
         tag = "${env.REGISTRY_URL}/${repository}/${image}:${version}"
         registry = "https://${env.REGISTRY_URL}"
       }      
