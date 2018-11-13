@@ -25,7 +25,10 @@ podTemplate( label: label,
     {
       def date = new Date()
       version = "${version_prefix}.${env.BUILD_NUMBER}.${date.format('MMdd')}"
-
+      echo '--------------------------------------------------'
+      echo "Building version ${version} for branch ${env.GIT_BRANCH}"
+      echo '--------------------------------------------------'
+      
       // Standard Docker Registry?
       if('index.docker.io'.equalsIgnoreCase(env.REGISTRY_URL)) 
       {
