@@ -220,8 +220,8 @@ NetworkPolicy:
 
 ## Install Default RBAC roles and bindings
 rbac:
-  install: false
-  serviceAccountName: default
+  install: true
+  serviceAccountName: jenkins-builder
   # Role reference
   roleRef: cluster-admin
   # Role kind (RoleBinding or ClusterRoleBinding)
