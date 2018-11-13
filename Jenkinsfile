@@ -39,11 +39,11 @@ podTemplate( label: label,
           def app
           if(docker_build_arguments=='') 
           {
-            app = docker.build(tag, "./src")
+            app = docker.build(tag, "./docker")
           }
           else 
           {
-            app = docker.build(tag,"--build-arg ${docker_build_arguments} ./src")
+            app = docker.build(tag,"--build-arg ${docker_build_arguments} ./docker")
           }
           app.push()
         }
