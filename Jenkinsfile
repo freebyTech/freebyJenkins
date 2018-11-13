@@ -26,9 +26,9 @@ podTemplate( label: label,
       def date = new Date()
       version = "${version_prefix}.${env.BUILD_NUMBER}.${date.format('MMdd')}"
       echo '--------------------------------------------------'
-      echo "Building version ${version} for branch ${env.GIT_BRANCH}"
+      echo "Building version ${version} for branch ${env.BRANCH_NAME}"
       echo '--------------------------------------------------'
-      
+
       // Standard Docker Registry?
       if('index.docker.io'.equalsIgnoreCase(env.REGISTRY_URL)) 
       {
@@ -64,7 +64,7 @@ podTemplate( label: label,
             app = docker.build(tag,"--build-arg ${docker_build_arguments} ./docker")
           }
           app.push()
-          if("develop".equalsIgnoreCase(env.GIT_BRANCH)) 
+          if("develop".equalsIgnoreCase(env.BRANCH_NAME)) 
           {
             app.push('latest')
           }          
