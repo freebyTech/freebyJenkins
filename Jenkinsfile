@@ -16,6 +16,7 @@ podTemplate( label: label,
     def version_prefix = '1.0'
     def tag=''
     def version=''
+    def registry = env.REGISTRY_URL
     def repository = 'freebytech'    
     def docker_build_arguments=''
 
@@ -24,7 +25,14 @@ podTemplate( label: label,
     {
       def date = new Date()
       version = "${version_prefix}.${date.format('MMdd')}.${env.BUILD_NUMBER}"
-      tag = "${env.REGISTRY_URL}/${repository}/${image}:${version}"
+      if('index.docker.io'.equalsIgnoreCase(registry)) 
+      {
+        tag = "${repository}/${image}:${version}"
+      }
+      else 
+      {
+        tag = "${registry}/${repository}/${image}:${version}"
+      }      
       currentBuild.displayName = "# " + version
     }
     //////////////////////////////////////////////////////////////////////////
@@ -34,7 +42,7 @@ podTemplate( label: label,
       {
         checkout scm
               
-        docker.withRegistry("https://${env.REGISTRY_URL}","5eb3385d-b03c-4802-a2b8-7f6df51f3209") 
+        docker.withRegistry("https://${registry}","5eb3385d-b03c-4802-a2b8-7f6df51f3209") 
         {
           def app
           if(docker_build_arguments=='') 
