@@ -14,11 +14,11 @@ podTemplate( label: label,
 {
   node(label) 
   {
-    def image = 'jenkins'
-    def tag=''
     def version=''
+    def tag=''
     def registry = ''
     def repository = 'freebytech'    
+    def image = 'jenkins'
     def docker_build_arguments=''
 
 	//////////////////////////////////////////////////////////////////////////
@@ -28,7 +28,7 @@ podTemplate( label: label,
       version = "${version_prefix}.${env.BUILD_NUMBER}.${date.format('MMdd')}"
 
       // Standard Docker Registry?
-      if('index.docker.io'.equalsIgnoreCase(registry)) 
+      if('index.docker.io'.equalsIgnoreCase(env.REGISTRY_URL)) 
       {
         echo 'Publishing to standard docker registry.'
         tag = "${repository}/${image}:${version}"
