@@ -21,8 +21,7 @@ podTemplate( label: label,
     def image = 'jenkins'
     def docker_build_arguments=''
 
-	//////////////////////////////////////////////////////////////////////////
-    stage('Setup Build Vars') 
+    stage('Setup Build Settings') 
     {
       def date = new Date()
       version = "${version_prefix}.${env.BUILD_NUMBER}.${date.format('MMdd')}"
@@ -42,8 +41,8 @@ podTemplate( label: label,
       }      
       currentBuild.displayName = "# " + version
     }
-    //////////////////////////////////////////////////////////////////////////
-    stage('Build Image') 
+    
+    stage('Build Image and Publish') 
     {
       container('docker') 
       {
@@ -62,42 +61,12 @@ podTemplate( label: label,
             app = docker.build(tag,"--build-arg ${docker_build_arguments} ./docker")
           }
           app.push()
+          if("develop".equalsIgnoreCase(env.GIT_BRANCH)) 
+          {
+            app.push('latest')
+          }          
         }
       }
     }
-    //////////////////////////////////////////////////////////////////////////
-    stage('Test')
-    {
-      sh 'echo testing' 
-    }
-
-
-    //////////////////////////////////////////////////////////////////////////
-  } // node
-  
-  //////////////////////////////////////////////////////////////////////////
-  stage("approval")
-  {
-      // we need a first milestone step so that all jobs entering this stage are tracked an can be aborted if needed
-      milestone 1
-    
-      timeout(time: 10, unit: 'MINUTES') 
-      {
-        script 
-        {
-          env.ENVIRONMENT = input message: 'User input required', ok: 'Select',
-            parameters: [choice(name: 'ENVIRONMENT', choices: 'Dev\nQA\nProd', description: 'Choose an environment')]
-        }
-      }
-      // this will kill any job which is still in the input step
-      milestone 2
-  }
-  //////////////////////////////////////////////////////////////////////////
-  node(label)
-  {
-    stage("deploy")
-    {
-      sh "echo deploying to... ${env.ENVIRONMENT}"
-    }
-  }// node
+  }  
 }
