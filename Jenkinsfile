@@ -17,13 +17,13 @@ podTemplate( label: label,
     def tag=''
     def version=''
     def repository = "freebytech"
-    
+
 	//////////////////////////////////////////////////////////////////////////
     stage('Prepare') 
     {
       def date = new Date()
       version = "${version_prefix}.${date.format('MMdd')}.${env.BUILD_NUMBER}"
-      tag = "${docker_registry}/${repository}/${image}:${version}"
+      tag = "${env.REGISTRY_URL}/${repository}/${image}:${version}"
       currentBuild.displayName = "# " + version
     }
     //////////////////////////////////////////////////////////////////////////
