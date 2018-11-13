@@ -17,7 +17,7 @@ podTemplate( label: label,
     def tag=''
     def version=''
     def repository = "freebytech"
-    def docker_regsitry = env.REGISTRY_URL
+    
 	//////////////////////////////////////////////////////////////////////////
     stage('Prepare') 
     {
@@ -33,7 +33,7 @@ podTemplate( label: label,
       {
         checkout scm
               
-        docker.withRegistry("https://${docker_registry}","5eb3385d-b03c-4802-a2b8-7f6df51f3209") 
+        docker.withRegistry("https://${env.REGISTRY_URL}","5eb3385d-b03c-4802-a2b8-7f6df51f3209") 
         {
           def app
           if(docker_build_arguments=='') 
