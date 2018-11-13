@@ -16,7 +16,8 @@ podTemplate( label: label,
     def version_prefix = '1.0'
     def tag=''
     def version=''
-    def repository = "freebytech"
+    def repository = 'freebytech'    
+    def docker_build_arguments=''
 
 	//////////////////////////////////////////////////////////////////////////
     stage('Prepare') 
