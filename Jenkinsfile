@@ -17,7 +17,7 @@ podTemplate( label: label,
     def tag=''
     def version=''
     def repository = "freebytech"
-    def docker_regsitry = ${env.REGISTRY_URL}
+    def docker_regsitry = env.REGISTRY_URL
 	//////////////////////////////////////////////////////////////////////////
     stage('Prepare') 
     {
