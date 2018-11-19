@@ -92,18 +92,18 @@ podTemplate( label: label,
   }
 
   //////////////////////////////////////////////////////////////////////////
-  node(label)
-  {
-    stage("Overwrite Jenkins")
-    {
-      // Use guid of known user for registry security
-        docker.withRegistry(registry, "5eb3385d-b03c-4802-a2b8-7f6df51f3209") 
-        {
-          docker.image(tag).withRun('') {
-            cd ~/freebyjenkins/deploy
-helm upgrade --install --namespace build freeby-jenkins ./freeby-jenkins
-        }
-      }
-    }
-  }  
+//   node(label)
+//   {
+//     stage("Overwrite Jenkins")
+//     {
+//       // Use guid of known user for registry security
+//         docker.withRegistry(registry, "5eb3385d-b03c-4802-a2b8-7f6df51f3209") 
+//         {
+//           docker.image(tag).withRun('') {
+//             cd ~/freebyjenkins/deploy
+// helm upgrade --install --namespace build freeby-jenkins ./freeby-jenkins
+//         }
+//       }
+//     }
+//   }  
 }
