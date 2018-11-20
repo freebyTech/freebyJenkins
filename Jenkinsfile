@@ -53,7 +53,7 @@ podTemplate( label: label,
         checkout scm
         
         // Use guid of known user for registry security
-        docker.withRegistry(registry, "Docker Registry User") 
+        docker.withRegistry(registry, "5eb3385d-b03c-4802-a2b8-7f6df51f3209") 
         {
           def app
           if(docker_build_arguments=='') 
