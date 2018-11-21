@@ -8,7 +8,11 @@ def repository = 'freebytech'
 def image = 'jenkins'
 def docker_build_arguments=''
 
-// Standard Docker Registry?
+
+def date = new Date()
+version = "${version_prefix}.${env.BUILD_NUMBER}.${date.format('MMdd')}"
+      
+// Standard Docker Registry or custom docker registry?
 if('index.docker.io'.equalsIgnoreCase(env.REGISTRY_URL)) 
 {
   echo 'Publishing to standard docker registry.'
@@ -36,13 +40,9 @@ podTemplate( label: label,
   {
     stage('Setup Build Settings') 
     {
-      def date = new Date()
-      version = "${version_prefix}.${env.BUILD_NUMBER}.${date.format('MMdd')}"
       echo '--------------------------------------------------'
       echo "Building version ${version} for branch ${env.BRANCH_NAME}"
-      echo '--------------------------------------------------'
-
-          
+      echo '--------------------------------------------------'          
       currentBuild.displayName = "# " + version
     }
     
