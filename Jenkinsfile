@@ -3,6 +3,7 @@ def label = "worker-${UUID.randomUUID().toString()}"
 def version_prefix = '1.0'
 def version=''
 def tag=''
+def agent_tag = ''
 def registry = ''
 def repository = 'freebytech'    
 def image = 'jenkins'
@@ -17,12 +18,14 @@ if('index.docker.io'.equalsIgnoreCase(env.REGISTRY_URL))
 {
   echo 'Publishing to standard docker registry.'
   tag = "${repository}/${image}:${version}"
+  agent_tag = "${repository}/jenkins-agent:latest"
   regsitry = ''
 }
 else 
 {
   echo "Publishing to registry ${env.REGISTRY_URL}"
   tag = "${env.REGISTRY_URL}/${repository}/${image}:${version}"
+  agent_tag = "${env.REGISTRY_URL}/${repository}/jenkins-agent:latest"
   registry = "https://${env.REGISTRY_URL}"
 }  
     
@@ -82,7 +85,7 @@ podTemplate( label: label,
         {
           script 
           {
-            env.OVERWRITE_JENKINS = input message: 'Overwrite current build server?', ok: 'Select',
+            env.OVERWRITE_JENKINS = input message: 'Overwrite current jenkins server?', ok: 'Select',
               parameters: [choice(name: 'OVERWRITE_JENKINS', choices: 'No\nYes', description: 'Whether or not to overwrite current jenkins')]
           }
         }
@@ -91,19 +94,20 @@ podTemplate( label: label,
     }
   }
 
-  //////////////////////////////////////////////////////////////////////////
-//   node(label)
-//   {
-//     stage("Overwrite Jenkins")
-//     {
-//       // Use guid of known user for registry security
-//         docker.withRegistry(registry, "5eb3385d-b03c-4802-a2b8-7f6df51f3209") 
-//         {
-//           docker.image(tag).withRun('') {
-//             cd ~/freebyjenkins/deploy
-// helm upgrade --install --namespace build freeby-jenkins ./freeby-jenkins
-//         }
-//       }
-//     }
-//   }  
+  node(label)
+  {
+    stage("Overwrite Jenkins")
+    {
+      // Use guid of known user for registry security
+        docker.withRegistry(registry, "5eb3385d-b03c-4802-a2b8-7f6df51f3209") 
+        {
+          docker.image(agent_tag).inside {
+            sh 'kubectl version'
+            sh 'helm version'
+            //cd ~/freebyjenkins/deploy
+            //helm upgrade --install --namespace build freeby-jenkins ./freeby-jenkins
+        }
+      }
+    }
+  }  
 }
