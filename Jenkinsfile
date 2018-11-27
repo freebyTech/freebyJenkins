@@ -113,9 +113,8 @@ podTemplate( label: label,
       container('freeby-agent') 
       {
         sh 'kubectl version'
+        sh 'helm init --client-only'
         sh 'helm version'
-          //cd ~/freebyjenkins/deploy
-          //helm upgrade --install --namespace build freeby-jenkins ./freeby-jenkins
       }
     }
   }
