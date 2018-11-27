@@ -93,17 +93,28 @@ podTemplate( label: label,
         milestone 2
     }
   }
+}
 
+podTemplate( label: label,
+  containers: 
+  [
+    containerTemplate(name: 'freeby-agent', image: agent_tag,  ttyEnabled: true, command: 'cat')
+  ], 
+  volumes: 
+  [
+    hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')
+  ],
+  imagePullSecrets: [ 'freebytech-regcred' ])
+{
   node(label)
   {
     stage("Overwrite Jenkins")
-    {
+    {      
       // Use guid of known user for registry security
-        docker.withRegistry(registry, "5eb3385d-b03c-4802-a2b8-7f6df51f3209") 
+        container('freeby-agent') 
         {
-          docker.image(agent_tag).inside {
-            sh 'kubectl version'
-            sh 'helm version'
+          sh 'kubectl version'
+          sh 'helm version'
             //cd ~/freebyjenkins/deploy
             //helm upgrade --install --namespace build freeby-jenkins ./freeby-jenkins
         }
