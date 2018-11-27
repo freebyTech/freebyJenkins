@@ -110,15 +110,13 @@ podTemplate( label: label,
   {
     stage("Overwrite Jenkins")
     {      
-      // Use guid of known user for registry security
-        container('freeby-agent') 
-        {
-          sh 'kubectl version'
-          sh 'helm version'
-            //cd ~/freebyjenkins/deploy
-            //helm upgrade --install --namespace build freeby-jenkins ./freeby-jenkins
-        }
+      container('freeby-agent') 
+      {
+        sh 'kubectl version'
+        sh 'helm version'
+          //cd ~/freebyjenkins/deploy
+          //helm upgrade --install --namespace build freeby-jenkins ./freeby-jenkins
       }
     }
-  }  
+  }
 }
