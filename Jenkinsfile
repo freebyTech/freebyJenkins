@@ -113,7 +113,9 @@ podTemplate( label: label,
       container('freeby-agent') 
       {
         sh 'kubectl version'
-        sh 'helm init --client-only'
+        sh 'kubectl get pods -n build'
+        sh 'kubectl get pods '
+        //sh 'helm init --client-only'
         sh 'helm version'
       }
     }
