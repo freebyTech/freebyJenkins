@@ -73,9 +73,14 @@ podTemplate( label: label,
           {
             app.push('latest')
           }
-          // Build the helm chart for the application.
-          sh 'pwd'
-          sh 'ls -la'
+
+          withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '5eb3385d-b03c-4802-a2b8-7f6df51f3209',
+          usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+              
+            sh 'echo uname=$USERNAME pwd=$PASSWORD'
+          }
+
+          
         }
       }
     }
