@@ -32,12 +32,13 @@ else
 podTemplate( label: label,
   containers: 
   [
-    containerTemplate(name: 'docker', image: 'docker:18.06', ttyEnabled: true, command: 'cat')
+    containerTemplate(name: 'freeby-agent', image: agent_tag,  ttyEnabled: true, command: 'cat')
   ], 
   volumes: 
   [
     hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')
-  ])
+  ],
+  serviceAccount: 'jenkins-builder')
 {
   node(label) 
   {
@@ -51,7 +52,7 @@ podTemplate( label: label,
     
     stage('Build Image and Publish') 
     {
-      container('docker') 
+      container('freeby-agent') 
       {
         checkout scm
         
@@ -71,7 +72,10 @@ podTemplate( label: label,
           if("develop".equalsIgnoreCase(env.BRANCH_NAME)) 
           {
             app.push('latest')
-          }          
+          }
+          // Build the helm chart for the application.
+          sh 'pwd'
+          sh 'ls -la'
         }
       }
     }
