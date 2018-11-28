@@ -75,12 +75,10 @@ podTemplate( label: label,
           }
 
           withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '5eb3385d-b03c-4802-a2b8-7f6df51f3209',
-          usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-              
-            sh 'echo uname=$USERNAME pwd=$PASSWORD'
-          }
-
-          
+          usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {              
+            echo env.USERNAME
+            echo env.PASSWORD
+          }          
         }
       }
     }
