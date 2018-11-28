@@ -59,7 +59,7 @@ podTemplate( label: label,
         // Service Account already has this secret in its definitnion
         // Use guid of known user for registry security
         // docker.withRegistry(registry, "5eb3385d-b03c-4802-a2b8-7f6df51f3209")
-        dcoker.withRegistry(registry)
+        docker.withRegistry(registry)
         {
           def app
           if(docker_build_arguments=='') 
