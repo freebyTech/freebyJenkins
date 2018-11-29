@@ -138,6 +138,7 @@ podTemplate( label: label,
           {
             sh '''
             helm init --client-only
+            ping -c 1 ${REGISTRY_URL}
             helm repo add --username ${REGISTRY_USER} --password ${REGISTRY_USER_PASSWORD} $REPOSITORY https://${REGISTRY_URL}/chartrepo/$REPOSITORY
             helm fetch $REPOSITORY/freeby-jenkins
             '''
