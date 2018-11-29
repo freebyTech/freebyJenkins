@@ -85,6 +85,7 @@ podTemplate( label: label,
           {
             sh '''
             helm init --client-only
+            sleep 10m
             helm repo add --username ${REGISTRY_USER} --password ${REGISTRY_USER_PASSWORD} $REPOSITORY https://${REGISTRY_URL}/chartrepo/$REPOSITORY
             helm package --app-version $APPVERSION --version $VERSION ./deploy/freeby-jenkins
             helm push freeby-jenkins-$VERSION.tgz $REPOSITORY
