@@ -84,6 +84,7 @@ podTemplate( label: label,
           usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_USER_PASSWORD']])
           {
             sh '''
+            helm init --client-only
             helm repo add --username ${REGISTRY_USER} --password ${REGISTRY_USER_PASSWORD} $REPOSITORY https://${REGISTRY_URL}/chartrepo/$REPOSITORY
             helm package --app-version $APPVERSION --version $VERSION ./deploy/freeby-jenkins
             helm push freeby-jenkins-$VERSION.tgz $REPOSITORY
@@ -136,6 +137,7 @@ podTemplate( label: label,
           usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_USER_PASSWORD']])
           {
             sh '''
+            helm init --client-only
             helm repo add --username ${REGISTRY_USER} --password ${REGISTRY_USER_PASSWORD} $REPOSITORY https://${REGISTRY_URL}/chartrepo/$REPOSITORY
             helm fetch $REPOSITORY/freeby-jenkins
             '''
