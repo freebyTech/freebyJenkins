@@ -2,6 +2,7 @@ def label = "worker-${UUID.randomUUID().toString()}"
 // Change this when major / minor functionality changes.
 def version_prefix = '1.0'
 def version=''
+def semVersion=''
 def tag=''
 def agent_tag = ''
 def registry = ''
@@ -12,7 +13,8 @@ def docker_build_arguments=''
 
 def date = new Date()
 version = "${version_prefix}.${env.BUILD_NUMBER}.${date.format('MMdd')}"
-      
+semVersion = "${version_prefix}.${env.BUILD_NUMBER}"
+
 // Standard Docker Registry or custom docker registry?
 if('index.docker.io'.equalsIgnoreCase(env.REGISTRY_URL)) 
 {
@@ -72,14 +74,22 @@ podTemplate( label: label,
           if("develop".equalsIgnoreCase(env.BRANCH_NAME)) 
           {
             app.push('latest')
-          }
-
-          withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '5eb3385d-b03c-4802-a2b8-7f6df51f3209',
-          usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {              
-            echo env.USERNAME
-            echo env.PASSWORD
-          }          
+          }         
         }
+
+        withEnv(["APPVERSION=${version}", "VERSION=${semVersion}", "REPOSITORY=${repository}"])
+        {
+          // Need registry credentials for agent build operation to setup chart museum connection.
+          withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '5eb3385d-b03c-4802-a2b8-7f6df51f3209',
+          usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_USER_PASSWORD']])
+          {
+            sh '''
+            helm repo add --username ${REGISTRY_USER} --password ${REGISTRY_USER_PASSWORD} $REPOSITORY https://${REGISTRY_URL}/chartrepo/$REPOSITORY
+            helm package --app-version $APPVERSION --version $VERSION ./deploy/freeby-jenkins
+            helm push freeby-jenkins-$VERSION.tgz $REPOSITORY
+            '''
+          }
+        }        
       }
     }
 
@@ -119,11 +129,18 @@ podTemplate( label: label,
     {      
       container('freeby-agent') 
       {
-        sh 'kubectl version'
-        sh 'kubectl get pods -n build'
-        sh 'kubectl get pods '
-        //sh 'helm init --client-only'
-        sh 'helm version'
+        withEnv(["APPVERSION=${version}", "VERSION=${semVersion}", "REPOSITORY=${repository}"])
+        {
+          // Need registry credentials for agent build operation to setup chart museum connection.
+          withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '5eb3385d-b03c-4802-a2b8-7f6df51f3209',
+          usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_USER_PASSWORD']])
+          {
+            sh '''
+            helm repo add --username ${REGISTRY_USER} --password ${REGISTRY_USER_PASSWORD} $REPOSITORY https://${REGISTRY_URL}/chartrepo/$REPOSITORY
+            helm fetch $REPOSITORY/freeby-jenkins
+            '''
+          }
+        }
       }
     }
   }
