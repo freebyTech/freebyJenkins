@@ -20,14 +20,14 @@ if('index.docker.io'.equalsIgnoreCase(env.REGISTRY_URL))
 {
   echo 'Publishing to standard docker registry.'
   tag = "${repository}/${image}:${version}"
-  agent_tag = "${repository}/jenkins-agent:1.0.9.1129"
+  agent_tag = "${repository}/jenkins-agent:1.0.19.1130"
   regsitry = ''
 }
 else 
 {
   echo "Publishing to registry ${env.REGISTRY_URL}"
   tag = "${env.REGISTRY_URL}/${repository}/${image}:${version}"
-  agent_tag = "${env.REGISTRY_URL}/${repository}/jenkins-agent:1.0.9.1129"
+  agent_tag = "${env.REGISTRY_URL}/${repository}/jenkins-agent:1.0.19.1130"
   registry = "https://${env.REGISTRY_URL}"
 }  
     
@@ -85,9 +85,7 @@ podTemplate( label: label,
           {
             sh '''
             pwd
-            helm init --client-only
             helm repo add --username ${REGISTRY_USER} --password ${REGISTRY_USER_PASSWORD} $REPOSITORY https://${REGISTRY_URL}/chartrepo/$REPOSITORY
-            helm plugin install https://github.com/chartmuseum/helm-push
             helm package --app-version $APPVERSION --version $VERSION ./deploy/jenkins
             helm push jenkins-$VERSION.tgz $REPOSITORY
             '''
@@ -115,35 +113,36 @@ podTemplate( label: label,
   }
 }
 
-podTemplate( label: label,
-  containers: 
-  [
-    containerTemplate(name: 'freeby-agent', image: agent_tag,  ttyEnabled: true, command: 'cat')
-  ], 
-  volumes: 
-  [
-    hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')
-  ],
-  serviceAccount: 'jenkins-builder')
+if('Yes'.equalsIgnoreCase(env.OVERWRITE_JENKINS)) 
 {
-  node(label)
+  podTemplate( label: label,
+    containers: 
+    [
+      containerTemplate(name: 'freeby-agent', image: agent_tag,  ttyEnabled: true, command: 'cat')
+    ], 
+    volumes: 
+    [
+      hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')
+    ],
+    serviceAccount: 'jenkins-builder')
   {
-    stage("Overwrite Jenkins")
-    {      
-      container('freeby-agent') 
-      {
-        withEnv(["APPVERSION=${version}", "VERSION=${semVersion}", "REPOSITORY=${repository}"])
+    node(label)
+    {
+      stage("Overwrite Jenkins")
+      {      
+        container('freeby-agent') 
         {
-          // Need registry credentials for agent build operation to setup chart museum connection.
-          withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '5eb3385d-b03c-4802-a2b8-7f6df51f3209',
-          usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_USER_PASSWORD']])
+          withEnv(["APPVERSION=${version}", "VERSION=${semVersion}", "REPOSITORY=${repository}"])
           {
-            sh '''
-            helm init --client-only
-            ping -c 1 ${REGISTRY_URL}
-            helm repo add --username ${REGISTRY_USER} --password ${REGISTRY_USER_PASSWORD} $REPOSITORY https://${REGISTRY_URL}/chartrepo/$REPOSITORY
-            helm upgrade --install --namespace build jenkins $REPOSITORY/jenkins
-            '''
+            // Need registry credentials for agent build operation to setup chart museum connection.
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '5eb3385d-b03c-4802-a2b8-7f6df51f3209',
+            usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_USER_PASSWORD']])
+            {
+              sh '''
+              helm repo add --username ${REGISTRY_USER} --password ${REGISTRY_USER_PASSWORD} $REPOSITORY https://${REGISTRY_URL}/chartrepo/$REPOSITORY
+              helm upgrade --install --namespace build jenkins $REPOSITORY/jenkins
+              '''
+            }
           }
         }
       }
