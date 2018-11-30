@@ -87,6 +87,7 @@ podTemplate( label: label,
             pwd
             helm init --client-only
             helm repo add --username ${REGISTRY_USER} --password ${REGISTRY_USER_PASSWORD} $REPOSITORY https://${REGISTRY_URL}/chartrepo/$REPOSITORY
+            helm plugin install https://github.com/chartmuseum/helm-push
             helm package --app-version $APPVERSION --version $VERSION ./deploy/jenkins
             helm push jenkins-$VERSION.tgz $REPOSITORY
             '''
