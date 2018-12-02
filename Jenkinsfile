@@ -84,7 +84,8 @@ podTemplate( label: label,
           usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_USER_PASSWORD']])
           {
             sh '''
-            pwd
+            helm init --client-only
+            helm plugin install https://github.com/chartmuseum/helm-push
             helm repo add --username ${REGISTRY_USER} --password ${REGISTRY_USER_PASSWORD} $REPOSITORY https://${REGISTRY_URL}/chartrepo/$REPOSITORY
             helm package --app-version $APPVERSION --version $VERSION ./deploy/jenkins
             helm push jenkins-$VERSION.tgz $REPOSITORY
@@ -139,6 +140,8 @@ if('Yes'.equalsIgnoreCase(env.OVERWRITE_JENKINS))
             usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_USER_PASSWORD']])
             {
               sh '''
+              helm init --client-only
+              helm plugin install https://github.com/chartmuseum/helm-push
               helm repo add --username ${REGISTRY_USER} --password ${REGISTRY_USER_PASSWORD} $REPOSITORY https://${REGISTRY_URL}/chartrepo/$REPOSITORY
               helm upgrade --install --namespace build jenkins $REPOSITORY/jenkins
               '''
