@@ -133,7 +133,7 @@ if('Yes'.equalsIgnoreCase(env.OVERWRITE_JENKINS))
       {      
         container('freeby-agent') 
         {
-          withEnv(["APPVERSION=${version}", "VERSION=${semVersion}", "REPOSITORY=${repository}"])
+          withEnv(["APPVERSION=${version}", "VERSION=${semVersion}", "IMAGEVERSION=${version}", "REPOSITORY=${repository}"])
           {
             // Need registry credentials for agent build operation to setup chart museum connection.
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '5eb3385d-b03c-4802-a2b8-7f6df51f3209',
@@ -143,7 +143,7 @@ if('Yes'.equalsIgnoreCase(env.OVERWRITE_JENKINS))
               helm init --client-only
               helm plugin install https://github.com/chartmuseum/helm-push
               helm repo add --username ${REGISTRY_USER} --password ${REGISTRY_USER_PASSWORD} $REPOSITORY https://${REGISTRY_URL}/chartrepo/$REPOSITORY
-              helm upgrade --install --namespace build jenkins $REPOSITORY/jenkins
+              helm upgrade --install --version $VERSION --set Master.ImageTag=${IMAGEVERSION} --namespace build jenkins $REPOSITORY/jenkins
               '''
             }
           }
