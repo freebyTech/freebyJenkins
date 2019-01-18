@@ -6,7 +6,7 @@ def semVersion=''
 def tag=''
 def agent_tag = ''
 def registry = ''
-def repository = 'freebytech'    
+def repository = 'freebytech-pub'    
 def image = 'jenkins'
 def docker_build_arguments=''
 

@@ -18,28 +18,13 @@ if ( envVarsNodePropertyList == null || envVarsNodePropertyList.size() == 0 ) {
   envVars = envVarsNodePropertyList.get(0).getEnvVars()
 }
 
-def val = System.getenv('AD_DOMAIN')
-
-// Null or empty check.
-if(val?.trim()) {
-  println 'Adding AD_DOMAIN'
-  envVars.put('AD_DOMAIN', val)
-}
-
-val = System.getenv('REGISTRY_URL')
-
-// Null or empty check.
-if(val?.trim()) {
-  println 'Adding REGISTRY_URL'
-  envVars.put('REGISTRY_URL', val)
-}
-
-val = System.getenv('GIT_REPO_URL')
-
-// Null or empty check.
-if(val?.trim()) {
-  println 'Adding GIT_REPO_URL'
-  envVars.put('GIT_REPO_URL', val)
-}
+System.getenv().forEach((k, v) -> {
+  // For any environment variable starting with "addenv_" add it to Jenkins without the "addenv_"
+  if(k.startsWith("addenv_")) {
+    def trueKey = k.substring(6)
+    println "Adding ${trueKey}"
+    envVars.put(trueKey, v)
+  }
+});
 
 instance.save()
