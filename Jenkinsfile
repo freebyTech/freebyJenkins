@@ -20,14 +20,14 @@ if('index.docker.io'.equalsIgnoreCase(env.REGISTRY_URL))
 {
   echo 'Publishing to standard docker registry.'
   tag = "${repository}/${image}:${version}"
-  agent_tag = "${repository}/jenkins-agent:1.0.25.1202"
+  agent_tag = "${repository}/jenkins-agent:1.0.4.0118"
   regsitry = ''
 }
 else 
 {
   echo "Publishing to registry ${env.REGISTRY_URL}"
   tag = "${env.REGISTRY_URL}/${repository}/${image}:${version}"
-  agent_tag = "${env.REGISTRY_URL}/${repository}/jenkins-agent:1.0.25.1202"
+  agent_tag = "${env.REGISTRY_URL}/${repository}/jenkins-agent:1.0.4.0118"
   registry = "https://${env.REGISTRY_URL}"
 }  
     
