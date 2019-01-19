@@ -22,7 +22,7 @@ if ( envVarsNodePropertyList == null || envVarsNodePropertyList.size() == 0 ) {
 Map<String, String> env = System.getenv();
 for (String envName : env.keySet()) {
   if(envName.startsWith("addenv_")) {
-      def trueKey = envName.substring(6)
+      def trueKey = envName.substring(7)
       println "Adding ${trueKey}"
       envVars.put(trueKey, env.get(envName))
     }
