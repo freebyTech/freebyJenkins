@@ -18,13 +18,14 @@ if ( envVarsNodePropertyList == null || envVarsNodePropertyList.size() == 0 ) {
   envVars = envVarsNodePropertyList.get(0).getEnvVars()
 }
 
-System.getenv().forEach((k, v) -> {
-  // For any environment variable starting with "addenv_" add it to Jenkins without the "addenv_"
-  if(k.startsWith("addenv_")) {
-    def trueKey = k.substring(6)
-    println "Adding ${trueKey}"
-    envVars.put(trueKey, v)
-  }
-});
+// For any environment variable starting with "addenv_" add it to Jenkins without the "addenv_"
+Map<String, String> env = System.getenv();
+for (String envName : env.keySet()) {
+  if(envName.startsWith("addenv_")) {
+      def trueKey = envName.substring(6)
+      println "Adding ${trueKey}"
+      envVars.put(trueKey, env.get(envName))
+    }
+}
 
 instance.save()
